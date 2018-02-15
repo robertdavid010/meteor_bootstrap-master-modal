@@ -95,6 +95,17 @@ Launch Modal
 ```
 Note: This will override both `data-template` and `data-param` attributes
 
+Lastly the `data-context` attribute can be used to pass a JSON object (as a string) to the modal trigger element, which will parsed as with keys corresponding to named alement data attributes. Also, any the top level `data` key will have all contained keys made available to the local template data context.
+
+```html
+<button class="btn btn-info"
+	...
+	data-context='{"template":"modalTemplate","title":"Modal Title","data":{"param1":"value1"}}'
+>
+	Launch Modal
+</button>
+```
+
 ## AutoForm Support
 
 MasterModal adds support to submit forms in the modal template through the simple convention of adding "Form" to the <template name> as the form id. 
@@ -109,6 +120,18 @@ Those supported forms will also close the modal with the `onSuccess` AutoForm ev
 ```
 
 ### Modal and Form buttons interaction
+
+There are two additional parameters that can be set for the MasterModal: `modalbtns` and `formbtns`. By default `modalbtns=true` and `formbtns=false`. Setting one will always make the other the opposite, even if conflicted. Also, `{{formbtns}}` will be available in the local modal template context so that existing forms can be used in modals, with the existing form buttons being replaced by the modal buttons.
+
+*existingTemplate.html*
+```html
+<form id="customForm">
+...
+{{#unless}}
+	<submit>Submit</submit>
+{{/unless}}
+</form>
+```
 
 
 
