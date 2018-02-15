@@ -1,0 +1,47 @@
+<template name="MasterModal">
+<!-- Template: MasterModal; File: bs-master-modal.html -->
+
+      {{!-- {{#with modalData}} --}}
+  <div id="master-modal" class="modal fade still" role="dialog" tabindex="-1">
+  {{!-- We need to support multiple sizes --}}
+    <div class="modal-dialog modal-{{size}}" role="document">
+
+      <div class="modal-content">
+        
+        <div class="modal-header">
+          {{#if bsV4}}
+            {{!-- Bootstrap4 Modal header --}}
+            <h5 class="modal-title">{{title}}</h5>
+            <button type="button" class="close" data-dismiss="modal"><span class="fa fa-times">&times;</span></button>
+          {{else}}
+            {{!-- Bootstrap3 Modal header --}}
+            <button type="button" class="close" data-dismiss="modal"><span class="fa fa-times">&times;</span></button>
+            <h5 class="modal-title">{{title}}</h5>
+          {{/if}}
+        </div>
+
+        <div class="modal-body">
+          {{!-- {{>Template.dynamic template=template data=this}} --}}
+          {{>Template.dynamic template=template data=modalData}}
+        </div>
+
+        {{#if modalbtns}}
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button id="modalFormSubmit" type="button" class="btn btn-success" data-submit="{{template}}Form">{{btnlabel}}</button>
+          </div>
+        {{/if}}
+        
+      </div><!-- /.modal-content -->
+
+    </div>
+  </div>
+
+      {{!-- {{/with}} --}}
+<!-- END Template: MasterModal; File: bs-master-modal.html -->
+</template>
+
+
+<template name="defaultModalTemplate">
+<h2 class="text-muted text-center">Modal</h2>
+</template>
