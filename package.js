@@ -27,13 +27,3 @@ Package.onUse(function(api) {
   api.export('MasterModal','client');
 });
 
-// Package.onTest(function(api) {
-//   api.use('ecmascript');
-//   api.use('tinytest');
-//   api.use('rd010:bs-master-modal');
-//   api.mainModule('bs-master-modal-tests.js');
-// });
-
-Npm.depends({
-  "bootstrap": "4.0.0"
-});
