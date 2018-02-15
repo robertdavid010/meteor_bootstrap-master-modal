@@ -48,7 +48,6 @@ if (Meteor.isClient) {
     self.modalDict = new ReactiveDict();
 
     var MMconfig = MasterModal.configs();
-    console.log(MMconfig);
     var MMtemplates = MMconfig.templates;
     var MMforms = MMconfig.forms;
     var MMkeys = MMconfig.keys
