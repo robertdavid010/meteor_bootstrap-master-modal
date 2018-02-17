@@ -155,11 +155,12 @@ MasterModal = new function () {
       }
 
       if (rawObj.formbtns) {
-        validObj.context.formbtns = rawObj.formbtns === "true" ? true : false;
-        validObj.modalbtns = !validObj.formbtns;
+        // NOTE: We want to see if simple logic inversion works
+        validObj.context.noformbtns = rawObj.formbtns === "true" ? false : true;
+        validObj.modalbtns = validObj.noformbtns;
       } else {
         validObj.modalbtns = rawObj.modalbtns === "false" ? false : true;
-        validObj.context.formbtns = !validObj.modalbtns;
+        validObj.context.noformbtns = validObj.modalbtns;
       }
 
       validObj.size = ["sm","md","lg"].indexOf(rawObj.size) !== -1 ? rawObj.size : CONFIG.size;
@@ -174,14 +175,14 @@ MasterModal = new function () {
     // Set options
 		__configure(configs, defaults);
 	}
-	this.configs = function () {
-		// Return the raw config object
-		return CONFIG;
-	}
   this.validateKeys = function (obj) {
     // This is to validate keys passed by the configuration object
     return __checkKeys(obj);
   }
+	this.configs = function () {
+		// Return the raw config object
+		return CONFIG;
+	}
   this.trigger = function (options) {
     $("#master-modal").modal({keyboard: true});
     Session.set("MasterModal", options);

@@ -157,10 +157,16 @@ Those supported forms will also close the modal with the `onSuccess` AutoForm ev
 There are two additional parameters that can be set for the MasterModal: `modalbtns` and `formbtns`. By default `modalbtns=true` and `formbtns=false`. Setting one will always make the other the opposite, even if conflicted. Also, `{{formbtns}}` will be available in the local modal template context so that existing forms can be used in modals, with the existing form buttons being replaced by the modal buttons.
 
 *existingTemplate.html*
-```html
+```handlebars
 <form id="customForm">
 ...
-{{#unless}}
+{{#unless noformbtns}}
+  <!-- 
+    Notice the inversion of the original attribute logic.
+    This is to prevent the false negative if the helper is not present.
+    (which would be the case if you wanted to re-use the template elsewhere).
+    This could also use this for other elements besides form buttons.
+  -->
   <submit>Submit</submit>
 {{/unless}}
 </form>
@@ -243,6 +249,9 @@ Also we can use the more explicit way of defining the view using the autoform bl
 <template name="simpleDialogue">
   {{#autoForm collection="ourCollection" id="simpleDialogueForm"}}
     <!-- form fields -->
+    {{#unless noformbtns}}
+      <button type="submit">Submit</button>
+    {{/unless}}
   {{/autoform}}
 </template>
 ```
