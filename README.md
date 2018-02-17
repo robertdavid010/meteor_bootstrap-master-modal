@@ -49,13 +49,13 @@ Not only can you configure the default settings for the modal, but they can be s
 
 ```html
 <button class="btn btn-info"
-	data-toggle="master-modal"
-	data-size="sm"
-	data-title="new modal title"
-	data-template="myTemplate"
-	data-btnlabel="OK"
+  data-toggle="master-modal"
+  data-size="sm"
+  data-title="new modal title"
+  data-template="myTemplate"
+  data-btnlabel="OK"
 >
-	Launch Modal
+  Launch Modal
 </button>
 ```
 
@@ -69,10 +69,10 @@ Additionally data can be passed to the local context of the rendered template, a
 
 ```html
 <button class="btn btn-info"
-	...
-	data-param="someId"
+  ...
+  data-param="someId"
 >
-	Launch Modal
+  Launch Modal
 </button>
 ```
 
@@ -86,12 +86,11 @@ The `data-route` attribute will take a simple URI type segment and regular query
 
 ```html
 <button class="btn btn-info"
-	...
-	data-route="/myTemplateName?param1=value1&param2=value2"
+  ...
+  data-route="/myTemplateName?param1=value1&param2=value2"
 >
 Launch Modal
 </button>
-
 ```
 Note: This will override both `data-template` and `data-param` attributes
 
@@ -99,14 +98,46 @@ Lastly the `data-context` attribute can be used to pass a JSON object (as a stri
 
 ```html
 <button class="btn btn-info"
-	...
-	data-context='{"template":"modalTemplate","title":"Modal Title","data":{"param1":"value1"}}'
+  ...
+  data-context='{"template":"modalTemplate","title":"Modal Title","data":{"param1":"value1"}}'
 >
-	Launch Modal
+  Launch Modal
 </button>
 ```
 
 Note: This is not intended as typical use case, merely for potential convenience.
+
+## Using Javascript
+
+MasterModal can also be called to trigger the modal with `MasterModal.trigger()`. It takes a options object identical to the use of the `data-context` attribute.
+
+```javascript
+MasterModal.trigger({
+  title: "Modal Title",
+  template: "myModalTemplate",
+  btnlabel: "Save",
+  data: {
+  	param1: "value1",
+  	param2: "value2"
+  }
+});
+```
+
+**Full list of configurable options**
+
+Available as data attributes for DOM element, or as keys in config obj for javascript usage.
+
+```javascript
+size // Bootstrap size for modal "sm","md","lg"
+title // Title displayed as modal-title
+template // Template rendered in the modal-body
+btnlabel // The label for the modal 'confirm' button
+formbtns // boolean helper available in template (default false)
+modalbtns // boolean helper to hide modal buttons if needed (default true)
+param // A single paramete to pass to the template data context
+route // Definition of template and params in URI format. Overrides both.
+context // Complete options object for the modal. Overrides all others.
+```
 
 ## AutoForm Support
 
@@ -130,7 +161,7 @@ There are two additional parameters that can be set for the MasterModal: `modalb
 <form id="customForm">
 ...
 {{#unless}}
-	<submit>Submit</submit>
+  <submit>Submit</submit>
 {{/unless}}
 </form>
 ```
@@ -170,11 +201,11 @@ Depending on how you would like the event element or styling of the object to wo
 ```handlebars
 ...
 <a href="#"
-data-toggle="master-modal"
-data-template="lightbox"
-data-title="{{imgName}}"
-data-param="{{imgUrl}}"
-data-size="lg"
+  data-toggle="master-modal"
+  data-template="lightbox"
+  data-title="{{imgName}}"
+  data-param="{{imgUrl}}"
+  data-size="lg"
 >
   <img class="mr-3" src="{{thumbUrl}}" alt="Generic placeholder image">
 </a>
