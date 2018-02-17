@@ -6,7 +6,7 @@ This package will allow for dynamically generated modal views from supplied temp
 You can trigger the modal as you would normally with bootstrap in the DOM, and set extra attributes for which template title etc. to render in the modal.
 
 To install:
-`meteor install rd010:bootstrap-master-modal`
+`meteor add rd010:bootstrap-master-modal`
 
 
 In your top level BlazeJS component template, include the MasterModal helper:
@@ -106,9 +106,11 @@ Lastly the `data-context` attribute can be used to pass a JSON object (as a stri
 </button>
 ```
 
+Note: This is not intended as typical use case, merely for potential convenience.
+
 ## AutoForm Support
 
-MasterModal adds support to submit forms in the modal template through the simple convention of adding "Form" to the <template name> as the form id. 
+MasterModal adds support to submit forms in the modal template through the simple convention of adding "Form" to the `<template name>` as the form id. 
 
 The form will also be submitted by the default modal *confirm* button.
 
@@ -133,7 +135,83 @@ There are two additional parameters that can be set for the MasterModal: `modalb
 </form>
 ```
 
+## Custom integration
+
+Since MasterModal uses default bootstrap methods to activate the modal, the modal may be triggered and handled with normal bootstrap methods. However this currently has limited support.
 
 
+## Examples
+
+### Lightbox
+
+One of the most common uses for modal views is to display the full image from a list of images in the main view when the user clicks on a thumbnail in the list. This will demonstrate how to implement such a feature using MasterModal.
+
+You should first have a template view that is showing a list of thumbnails for instance. For example if you were using the bootstrap `media` list to show a list of thumbnails:
+
+*picturesList.html*
+
+```handlebars
+{{#each picture}}
+<ul class="list-unstyled">
+  <li class="media">
+    <img class="mr-3" src="{{thumbUrl}}" alt="Generic placeholder image">
+    <div class="media-body">
+      <h5 class="mt-0 mb-1">List-based media object</h5>
+      Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+    </div>
+  </li>
+{{/each}}
+```
 
 
+Depending on how you would like the event element or styling of the object to work is up to you. If we were to wrap the img in an `<a>` element to trigger the modal, this is how it would work:
+
+*picturesList.html*
+```handlbars
+...
+<a href="#"
+data-toggle="master-modal"
+data-template="lightbox"
+data-title="{{imgName}}"
+data-param="{{imgUrl}}"
+data-size="lg"
+>
+  <img class="mr-3" src="{{thumbUrl}}" alt="Generic placeholder image">
+</a>
+...
+```
+
+Now you are able to create a generic lightbox template to display the image.
+
+*lightbox.html*
+```handlebars
+<template name="lightbox"
+  ...
+  <img src="{{param}}">
+  ...
+</template>
+```
+
+### Autoform
+
+This example demonstrates how to display and use an autoform as a simple dialogue form within MasterModal. We can assume the trigger element and all options are set.
+
+First with quickform, we dont have much easy control over whether the submit button is shown, so we want to use it. This means we want to hide the modal buttons. So add to the trigger element the attribute `data-modalbtns="false"` As mentioned above, MasterModal will know the autoform has been successfully submitted if you use the appropriate naming convention of "*templateName*Form" for the form id.
+
+*simpleDialogue.html*
+```handlebars
+<template name="simpleDialogue">
+  {{> quickform collection="ourCollection" id="simpleDialogueForm"}}
+</template>
+```
+
+Also we can use the more explicit way of defining the view using the autoform block helper. With this we can avoid needing to create the submit button for the form, as the modal confirm button will submit the appropriately named form.
+
+*simpleDialogue.html*
+```handlbars
+<template name="simpleDialogue">
+  {{#autoForm collection="ourCollection" id="simpleDialogueForm"}}
+    <!-- form fields -->
+  {{/autoform}}
+</template>
+```
