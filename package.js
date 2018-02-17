@@ -2,7 +2,7 @@ Package.describe({
   name: 'rd010:bootstrap-master-modal',
   version: '0.0.3',
   // Brief, one-line summary of the package.
-  summary: 'Dynamically generate modals for Bootstrap & Meteor. Supports AutoForm, Bootstrap v 3 & 4. Use for lightboxes, dialogues etc., and re-use existing templates.',
+  summary: 'Dynamic Modals. Use AutoForm, Bootstrap v 3/4, & existing templates for lightboxes, dialogues etc.',
   // URL to the Git repository containing the source code for this package.
   git: 'https://github.com/robertdavid010/meteor_bootstrap-master-modal.git',
   // By default, Meteor will default to using README.md for documentation.
