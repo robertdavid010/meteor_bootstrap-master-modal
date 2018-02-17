@@ -164,10 +164,10 @@ You should first have a template view that is showing a list of thumbnails for i
 ```
 
 
-Depending on how you would like the event element or styling of the object to work is up to you. If we were to wrap the img in an `<a>` element to trigger the modal, this is how it would work:
+Depending on how you would like the event element or styling of the object to work is up to you. If we were to wrap the img in an `<a>` element to trigger the modal, this is how it would work.
 
 *picturesList.html*
-```handlbars
+```handlebars
 ...
 <a href="#"
 data-toggle="master-modal"
@@ -208,7 +208,7 @@ First with quickform, we dont have much easy control over whether the submit but
 Also we can use the more explicit way of defining the view using the autoform block helper. With this we can avoid needing to create the submit button for the form, as the modal confirm button will submit the appropriately named form.
 
 *simpleDialogue.html*
-```handlbars
+```handlebars
 <template name="simpleDialogue">
   {{#autoForm collection="ourCollection" id="simpleDialogueForm"}}
     <!-- form fields -->

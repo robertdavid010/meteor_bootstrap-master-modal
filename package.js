@@ -16,9 +16,9 @@ Package.onUse(function(api) {
     'ecmascript',
     'jquery',
     'session',
-    'templating',
+    'blaze-html-templates@1.0.4',
   ], 'client');
-  api.use('aldeed:autoform','client',{weak: true});
+  api.use('aldeed:autoform@6.3.0','client',{weak: true});
 
   api.addFiles('MasterModal.js', 'client');
   api.addFiles('client/bs-master-modal.html', 'client');

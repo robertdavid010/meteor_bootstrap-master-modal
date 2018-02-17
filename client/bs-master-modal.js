@@ -1,42 +1,6 @@
 // bs-master-modal.js
 
 
-parseUri = function (str) {
-	// PARSER for using url style arguments
-	// parseUri 1.2.2
-	// (c) Steven Levithan <stevenlevithan.com>
-	// MIT License
-	function parser (s) {
-		var	o   = this.options,
-			m   = o.parser[o.strictMode ? "strict" : "loose"].exec(s),
-			uri = {},
-			i   = 14;
-
-		while (i--) uri[o.key[i]] = m[i] || "";
-
-		uri[o.q.name] = {};
-		uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
-			if ($1) uri[o.q.name][$1] = $2;
-		});
-
-		return uri;
-	};
-
-	this.options = {
-		strictMode: false,
-		key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
-		q:   {
-			name:   "queryKey",
-			parser: /(?:^|&)([^&=]*)=?([^&]*)/g
-		},
-		parser: {
-			strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
-			loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
-		}
-	};
-
-	return parser(str);
-};
 
 
 if (Meteor.isClient) {
@@ -55,46 +19,6 @@ if (Meteor.isClient) {
     self.setModalData = function (obj) {
       var sessionData = obj || null;
       var modalData = {context:{}};
-      // NOTE: We are using modalData.context to contain data for the target
-      // template. This is a semantical difference from the 'context' field in sessionData
-      // Simply put: sessionData.context.data = modalData.context
-
-      function validateKeys(rawObj) {
-        // Logic for context already done...
-        var validObj = {};
-        validObj.context = rawObj.context || {};
-          if (rawObj.template) {
-            validObj.template = rawObj.template;
-          } else if (rawObj.route) {
-            // A way of passing template and params together
-            // we parse it as a 'url' type path
-            // Template name is taken from first URL segment
-            // Params parsed and passed through to modal data context
-            var route = parseUri(sessionData.route);
-            validObj.template = route.path.split('/')[1];
-            validObj.context = route.queryKey;
-          } else {
-            validObj.template = "defaultModalTemplate";
-          }
-
-          if (rawObj.param && Object.keys(validObj.context).length === 0) {
-            validObj.context.param = rawObj.param;
-          }
-
-          if (rawObj.formbtns) {
-            validObj.context.formbtns = rawObj.formbtns === "true" ? true : false;
-            validObj.modalbtns = !validObj.formbtns;
-          } else {
-            validObj.modalbtns = rawObj.modalbtns === "false" ? false : true;
-            validObj.context.formbtns = !validObj.modalbtns;
-          }
-
-          validObj.size = ["sm","md","lg"].indexOf(rawObj.size) !== -1 ? rawObj.size : MMconfig.size;
-          validObj.title = rawObj.title || MMconfig.title;
-          validObj.btnlabel = rawObj.btnlabel || MMconfig.btnlabel;
-
-        return validObj;
-      } // end validateKeys() {}
 
       if (!sessionData || self.modalClosed.get()) {
         // Set/reset empty modal defaults
@@ -107,27 +31,9 @@ if (Meteor.isClient) {
         }
 
       } else {
-      	// ********************
         // The modal was triggered properly
-      	if (!sessionData.context) {
-          modalData = validateKeys(sessionData);
-
-      	} else {
-          // "context" data attribute override
-          var parsed = JSON.parse(sessionData.context);
-          var modalObj = {};
-
-          for (var e in parsed) {
-            if (e === "data") {
-              // Slight chance in semantics here
-              modalObj.context = parsed[e];
-            } else {
-              modalObj[e] = parsed[e];
-            }
-          }
-          modalData = validateKeys(modalObj);
-      	}
-
+        // Parse and validate the config object
+        modalData = MasterModal.validateKeys(sessionData);
       }
 
       for (var e in modalData) {
@@ -237,8 +143,7 @@ if (Meteor.isClient) {
 		      evtData.callerTemplate = this["$blaze_range"].view.name.split('.').pop();
         }
 
-        $("#master-modal").modal({keyboard: true});
-        Session.set("MasterModal", evtData);
+        MasterModal.trigger(evtData);
 
       };
 
