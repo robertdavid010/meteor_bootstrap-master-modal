@@ -125,18 +125,20 @@ MasterModal.trigger({
 
 **Full list of configurable options**
 
-Available as data attributes for DOM element, or as keys in config obj for javascript usage.
+Available configurable MasterModal attributes:
 
 ```javascript
 size // Bootstrap size for modal "sm","md","lg"
 title // Title displayed as modal-title
 template // Template rendered in the modal-body
 btnlabel // The label for the modal 'confirm' button
-formbtns // boolean helper available in template (default false)
-modalbtns // boolean helper to hide modal buttons if needed (default true)
+formbtns // helper available in template to be used with Autoform quickform
+modalbtns // boolean to hide modal buttons if needed (default true)
+modalview // Boolean helper to indicate the template is in a modal view. Can be used to show/hide content etc. for template re-use.
 param // A single paramete to pass to the template data context
 route // Definition of template and params in URI format. Overrides both.
-context // Complete options object for the modal. Overrides all others.
+context // NOTE: Intented for DOM element attribute only. Complete options object for the modal in JSON string. Overrides.
+data // NOTE: Javascript config object and context attribute key. Fully description of data context for the modal template.
 ```
 
 ## AutoForm Support
@@ -152,30 +154,31 @@ Those supported forms will also close the modal with the `onSuccess` AutoForm ev
 {{> quickForm id="myTemplateNameForm"}}
 ```
 
-### Modal and Form buttons interaction
+### Modal Buttons
 
-There are two additional parameters that can be set for the MasterModal: `modalbtns` and `formbtns`. By default `modalbtns=true` and `formbtns=false`. Setting one will always make the other the opposite, even if conflicted. Also, `{{formbtns}}` will be available in the local modal template context so that existing forms can be used in modals, with the existing form buttons being replaced by the modal buttons.
+There are two additional parameters that can be set to control the display of buttons in the MasterModal view: `modalbtns` and `formbtns`. By default `modalbtns=true` and `formbtns=false`. Setting one will always make the other the opposite, even if conflicted.
+
+`{{formbtns}}` will be available in the local modal template context so for use with Autoform's `buttonContent` attribute for the `{{> quickform}}` template.
+
+### Re-using Templates
+
+Additionally `modalview` is available as helper in the modal template, and is a simple boolean value which will allow you to show or hide content based on whether or not the template is in the modal view. This will allow for re-use of templates in different contexts.
+
+For example if you wanted to hide your custom form buttons in a template you wished to re-use elsewhere, using the default modal buttons instead for UI consistency:
 
 *existingTemplate.html*
 ```handlebars
-<form id="customForm">
+<form id="exsitingTemplateForm">
 ...
-{{#unless noformbtns}}
-  <!-- 
-    Notice the inversion of the original attribute logic.
-    This is to prevent the false negative if the helper is not present.
-    (which would be the case if you wanted to re-use the template elsewhere).
-    This could also use this for other elements besides form buttons.
-  -->
-  <submit>Submit</submit>
+{{#unless modalview}}
+  <submit class="custom-submit">Submit</submit>
 {{/unless}}
 </form>
 ```
 
 ## Custom integration
 
-Since MasterModal uses default bootstrap methods to activate the modal, the modal may be triggered and handled with normal bootstrap methods. However this currently has limited support.
-
+Since MasterModal uses default bootstrap methods to activate the modal, the modal may be triggered and handled with normal bootstrap methods. However this currently has limited testing.
 
 ## Examples
 
@@ -233,25 +236,14 @@ Now you are able to create a generic lightbox template to display the image.
 
 This example demonstrates how to display and use an autoform as a simple dialogue form within MasterModal. We can assume the trigger element and all options are set.
 
-First with quickform, we dont have much easy control over whether the submit button is shown, so we want to use it. This means we want to hide the modal buttons. So add to the trigger element the attribute `data-modalbtns="false"` As mentioned above, MasterModal will know the autoform has been successfully submitted if you use the appropriate naming convention of "*templateName*Form" for the form id.
+As mentioned above, MasterModal will know the autoform has been successfully submitted if you use the appropriate naming convention of "*templateName*Form" for the form id.
 
-*simpleDialogue.html*
+**Simple AutoForm Dialogue Example**
+
+*With Autoform Quickform*
 ```handlebars
-<template name="simpleDialogue">
-  {{> quickform collection="ourCollection" id="simpleDialogueForm"}}
-</template>
+...
+{{> quickform collection="ourCollection" id="myTemplateForm" buttonContent=formbtns}}
+...
 ```
 
-Also we can use the more explicit way of defining the view using the autoform block helper. With this we can avoid needing to create the submit button for the form, as the modal confirm button will submit the appropriately named form.
-
-*simpleDialogue.html*
-```handlebars
-<template name="simpleDialogue">
-  {{#autoForm collection="ourCollection" id="simpleDialogueForm"}}
-    <!-- form fields -->
-    {{#unless noformbtns}}
-      <button type="submit">Submit</button>
-    {{/unless}}
-  {{/autoform}}
-</template>
-```

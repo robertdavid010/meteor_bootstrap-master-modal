@@ -71,6 +71,7 @@ MasterModal = new function () {
     CONFIG.template = "defaultModalTemplate";
     CONFIG.formbtns = false;
     CONFIG.modalbtns = true;
+    CONFIG.modalview = true;
     CONFIG.btnlabel = "Submit";
     CONFIG.keys = [
       "title",
@@ -118,7 +119,7 @@ MasterModal = new function () {
 
       for (var e in parsed) {
         if (e === "data") {
-          // Slight chance in semantics here
+          // Slight change in semantics here
           modalObj.context = parsed[e];
         } else {
           modalObj[e] = parsed[e];
@@ -156,13 +157,19 @@ MasterModal = new function () {
 
       if (rawObj.formbtns) {
         // NOTE: We want to see if simple logic inversion works
-        validObj.context.noformbtns = rawObj.formbtns === "true" ? false : true;
-        validObj.modalbtns = validObj.noformbtns;
+        validObj.context.formbtns = rawObj.formbtns === "true" ? true : false;
+        validObj.modalbtns = !validObj.context.formbtns;
       } else {
         validObj.modalbtns = rawObj.modalbtns === "false" ? false : true;
-        validObj.context.noformbtns = validObj.modalbtns;
+        validObj.context.formbtns = !validObj.modalbtns;
       }
-
+      console.log(validObj.modalbtns);
+      // Wierd for AF quickform interaction (true must be "Submit" for default...);
+      if (validObj.context.formbtns === true) {
+        validObj.context.formbtns = rawObj.btnlabel || "Submit";
+      }
+      // Set/check defaults Defaults
+      validObj.context.modalview = rawObj.modalview === "false" ? false : CONFIG.modalview; // TODO: Complete logic to handle future config changes
       validObj.size = ["sm","md","lg"].indexOf(rawObj.size) !== -1 ? rawObj.size : CONFIG.size;
       validObj.title = rawObj.title || CONFIG.title;
       validObj.btnlabel = rawObj.btnlabel || CONFIG.btnlabel;
