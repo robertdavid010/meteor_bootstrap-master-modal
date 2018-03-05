@@ -193,9 +193,9 @@ Based on configurations above, several helpers are by default available within t
 - param
 
 ```handlebars
-{{param}}
+{{modalview}}
 ```
-The single value passed by the `data-param` attribute from the DOM.
+Default simple boolean helper to allow for template views to easily conditionally disply UI elements based on the modal context. See examples with AutoForm.
 
 ```handlebars
 {{formbtns}}
@@ -203,9 +203,9 @@ The single value passed by the `data-param` attribute from the DOM.
 For use with Autoform `{{> quickform}}` `buttonContent` parameter to either hide or display custom form submission button content. Can be set to "false" or custom text.
 
 ```handlebars
-{{modalview}}
+{{param}}
 ```
-Default simple boolean helper to allow for template views to easily conditionally disply UI elements based on the modal context. See examples with AutoForm.
+The single value passed by the `data-param` attribute from the DOM.
 
 ## AutoForm Support
 
