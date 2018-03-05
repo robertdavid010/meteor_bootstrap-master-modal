@@ -1,38 +1,39 @@
 # Bootstrap Master Modal
-### For MeteorJS & BlazeJS
 
-This package will allow for dynamically generated modal views from supplied template.
+### For Meteor & BlazeJS
 
-You can trigger the modal as you would normally with bootstrap in the DOM, and set extra attributes for which template title etc. to render in the modal.
+Generate dynamic modal dialogues, lightboxes, or any other view based on Blaze templates and custom modal attributes. The modal can be implemented and used similarly to the default Bootstrap modal if needed, allowing for re-use of existing code and templates.
 
 To install:
 `meteor add rd010:bootstrap-master-modal`
 
-
 In your top level BlazeJS component template, include the MasterModal helper:
+
+*app.js*
 ```handlebars
 {{MasterModal}}
 ```
 
 This will add the bootstrap modal element to your HTML document.
 
-You trigger the modal in the same manner as a normal bootstrap modal with modifications:
+You trigger the modal through the DOM in the same manner as a normal bootstrap modal but with the `master-modal` target:
 
 ```html
 <button class="btn btn-info" data-toggle="master-modal">Launch Modal</button>
 ```
 
-This will launch the modal with empty settings
+This will launch the modal with empty settings an no content.
 
-## Configuring MasterModal
+## Configuring MasterModal Defaults
 
-By passing configuration parameters to the `MasterModal.options()` method, you can set some default options.
+By passing configuration parameters to the `MasterModal.options(array, options)` method, you can set some default options.
 
-The **array** parameter is a list of templates which will be used by MasterModal
+The **array** parameter is a set of whitelisted of templates which will be used by MasterModal. This is for security reasons, to prevent loading of templates not intended for modal use (see **Security**)
 ```javascript
 var arr = ['myTemplate','lightbox',...]
 ```
-The **obj** parameter is an object with several optional default settings
+
+The **options** parameter is an object with keys for several optional default settings to use when those instance specific options are not provided to the MasterModal.
 ```javascript
 var obj = {size:"lg",title:"Modal Title",template:"myDefaultTemplate",btnlabel:"Confirm"}
 ```
@@ -43,16 +44,16 @@ var obj = {size:"lg",title:"Modal Title",template:"myDefaultTemplate",btnlabel:"
 MasterModal.options(arr, obj);
 ```
 
-## Event modal configuration
+## MasterModal Instance Configuration
 
-Not only can you configure the default settings for the modal, but they can be set through the data attributes of the event element.
+Options for the specific instance of the MasterModal can be set through the data attributes of the event element which launches the modal:
 
 ```html
 <button class="btn btn-info"
   data-toggle="master-modal"
   data-size="sm"
-  data-title="new modal title"
-  data-template="myTemplate"
+  data-title="My Modal Title"
+  data-template="myModalTemplate"
   data-btnlabel="OK"
 >
   Launch Modal
@@ -61,7 +62,7 @@ Not only can you configure the default settings for the modal, but they can be s
 
 ## Templates
 
-Templates are rendered inside the `modal-body` element within the modal dialogue, and are defined normally as Meteor templates.
+Templates are rendered inside the `modal-body` element within the modal dialogue, and are defined as typical Meteor templates.
 
 ## Passing data to the modal
 
@@ -76,7 +77,7 @@ Additionally data can be passed to the local context of the rendered template, a
 </button>
 ```
 
-This will make the `{{param}}` value available within the Blaze template
+This will make the `{{param}}` value available within the Blaze template, and contain the `somdId` value.
 
 ## More complex configuration of modal
 
@@ -109,7 +110,7 @@ Note: This is not intended as typical use case, merely for potential convenience
 
 ## Using Javascript
 
-MasterModal can also be called to trigger the modal with `MasterModal.trigger()`. It takes a options object identical to the use of the `data-context` attribute.
+MasterModal can also be called to trigger the modal with javascript with `MasterModal.trigger()`. The method takes a options object with identical formatting to the `data-context` attribute as described above.
 
 ```javascript
 MasterModal.trigger({
@@ -123,23 +124,88 @@ MasterModal.trigger({
 });
 ```
 
-**Full list of configurable options**
+### MasterModal Configuration Options
 
-Available configurable MasterModal attributes:
+List of available MasterModal configuration options. These are availble when launching an instance of the modal view template using the `MasterModal.trigger()` method or through the DOM (appending "data-" to the attribute).
 
-```javascript
-size // Bootstrap size for modal "sm","md","lg"
-title // Title displayed as modal-title
-template // Template rendered in the modal-body
-btnlabel // The label for the modal 'confirm' button
-formbtns // helper available in template to be used with Autoform quickform
-modalbtns // boolean to hide modal buttons if needed (default true)
-modalview // Boolean helper to indicate the template is in a modal view. Can be used to show/hide content etc. for template re-use.
-param // A single paramete to pass to the template data context
-route // Definition of template and params in URI format. Overrides both.
-context // NOTE: Intented for DOM element attribute only. Complete options object for the modal in JSON string. Overrides.
-data // NOTE: Javascript config object and context attribute key. Fully description of data context for the modal template.
+- [size](#configsize)
+- [title](#configtitle)
+- [template](#configtemplate)
+- [btnlabel](#configbtnlabel)
+- [formbtns](#configformbtns)
+- [modalbtns](#configmodalbtns)
+- [modalview](#configmodalview)
+- [param](#configparam)
+- [route](#configroute)
+- [context(config)](#configcontext)
+  - [data](#configdata)
+
+<a name="configsize"></a>
+**`size`**
+Takes bootstrap size shorthand as one of either `sm`, `md`, or `lg`. If none is specified at the launch of the modal, the defaults will be used. If no size parameter is passed as user defaults, the package default is `md`.
+
+<a name="configtitle"></a>
+**`title`**
+The title to be displayed as the title for the modal view in the Bootstrap `modal-title` element. This should be set in the configuration of MasterModal.
+
+<a name="configtemplate"></a>
+**`template`**
+The template to display when no template is passed to the modal instnace. This is the equivalent to a `Error 404` page.
+
+<a name="configbtnlabel"></a>
+**`btnlabel`**
+This will be used in place of the default text used by the package for the modal "confirm" button. The package default is "Submit".
+
+<a name="configformbtns"></a>
+**`formbtns`**
+This attribute is available with the modal template context to be used to pass to the `buttonContent` parameter for AutoForm quickform.
+
+<a name="configmodalbtns"></a>
+**`modalbtns`**
+Setting this to `false` will hide the modal confirmation and dismiss buttons, allowing use of custom UI controls for the modal. Default is `true` of course.
+
+<a name="configmodalview"></a>
+**`modalview`**
+This helper is available within the modal template context as a boolean value to indicate the template is being rendered in the modal view. This will allow for the hiding of content within that supplied template based on the modal context to allow for re-use of the template in other contexts, with different controls or elements.
+
+<a name="configparam"></a>
+**`param`**
+The value to be passed to the related helper available within the modal template when set on the launch of the template instance through the DOM trigger element.
+
+<a name="configroute"></a>
+**`route`**
+Allows for definition of template and params in URI format using single attribute on the triggering DOM element. Overrides other direct attributes.
+
+<a name="configcontext"></a>
+**`context`**
+NOTE: Intented for DOM element attribute only. Complete options object for the modal in JSON string. Overrides other direct attributes, and can include the `data` element.
+
+<a name="configdata"></a>
+**`data`**
+Javascript config object and context attribute key. Fully describes the data context for the template when used in the `data-context` DOM attribute, or within the `data:{}` key for the config object passed to `MasterModal.trigger()` method.
+
+
+## Template View Helpers
+Based on configurations above, several helpers are by default available within the modal view template data context.
+
+- modalview
+- formbtns
+- param
+
+```handlebars
+{{param}}
 ```
+The single value passed by the `data-param` attribute from the DOM.
+
+```handlebars
+{{formbtns}}
+```
+For use with Autoform `{{> quickform}}` `buttonContent` parameter to either hide or display custom form submission button content. Can be set to "false" or custom text.
+
+```handlebars
+{{modalview}}
+```
+Default simple boolean helper to allow for template views to easily conditionally disply UI elements based on the modal context. See examples with AutoForm.
 
 ## AutoForm Support
 
@@ -168,21 +234,21 @@ For example if you wanted to hide your custom form buttons in a template you wis
 
 *existingTemplate.html*
 ```handlebars
-<form id="exsitingTemplateForm">
-...
-{{#unless modalview}}
-  <submit class="custom-submit">Submit</submit>
-{{/unless}}
-</form>
+{{#autoForm id="exsitingTemplateForm">
+    <!-- form fields -->
+    {{#unless modalview}}
+        <submit class="custom-submit">Submit</submit>
+    {{/unless}}
+{{/autoForm}}
 ```
 
 ## Custom integration
 
-Since MasterModal uses default bootstrap methods to activate the modal, the modal may be triggered and handled with normal bootstrap methods. However this currently has limited testing.
+Since MasterModal uses default bootstrap methods to activate the modal, the modal may be triggered and handled with those normal bootstrap methods. However this currently has limited testing.
 
 ## Examples
 
-### Lightbox
+**Lightbox**
 
 One of the most common uses for modal views is to display the full image from a list of images in the main view when the user clicks on a thumbnail in the list. This will demonstrate how to implement such a feature using MasterModal.
 
@@ -197,7 +263,7 @@ You should first have a template view that is showing a list of thumbnails for i
     <img class="mr-3" src="{{thumbUrl}}" alt="Generic placeholder image">
     <div class="media-body">
       <h5 class="mt-0 mb-1">List-based media object</h5>
-      Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+      Cras sit amet nibh libero, in gravida nulla. 
     </div>
   </li>
 {{/each}}
@@ -225,25 +291,23 @@ Now you are able to create a generic lightbox template to display the image.
 
 *lightbox.html*
 ```handlebars
-<template name="lightbox"
+<template name="lightbox">
   ...
   <img src="{{param}}">
   ...
 </template>
 ```
 
-### Autoform
+**Simple AutoForm Dialogue Example**
 
 This example demonstrates how to display and use an autoform as a simple dialogue form within MasterModal. We can assume the trigger element and all options are set.
 
-As mentioned above, MasterModal will know the autoform has been successfully submitted if you use the appropriate naming convention of "*templateName*Form" for the form id.
+As mentioned above, MasterModal will know the autoform has been successfully submitted if you use the appropriate naming convention of "\<templateName>Form" for the form id.
 
-**Simple AutoForm Dialogue Example**
-
-*With Autoform Quickform*
+*myTemplate.html*
 ```handlebars
-...
-{{> quickform collection="ourCollection" id="myTemplateForm" buttonContent=formbtns}}
-...
+<template name="myTemplate">
+    {{> quickform collection="myCollection" id="myTemplateForm" buttonContent=formbtns}}
+</template>
 ```
 
