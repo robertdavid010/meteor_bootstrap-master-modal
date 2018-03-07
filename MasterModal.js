@@ -171,6 +171,7 @@ MasterModal = new function () {
       validObj.btnlabel = rawObj.btnlabel || CONFIG.btnlabel;
 
     // Convert conventions for namespaced helpers
+    // TODO: Replace with loop/function
     validObj.context.MMformbtn = validObj.context.formbtns; delete validObj.context.formbtns;
     validObj.context.MMview = validObj.context.modalview; delete validObj.context.modalview;
     validObj.context.MMparam = validObj.context.param; delete validObj.context.param;

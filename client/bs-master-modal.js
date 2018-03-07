@@ -55,7 +55,7 @@ if (Meteor.isClient) {
 
     self.initialize = function () {
     	if (!self.init) {
-    		// initialize
+    		// initialize. Not in use yet.
     		self.init = true;
     	}
     }
@@ -66,24 +66,11 @@ if (Meteor.isClient) {
     	}
 
       if (Session.get("MasterModal")) {
+        // Reactive trigger to configure modal data on below body event.
         self.setModalData(Session.get("MasterModal"));
       }
     });
 
-  });
-
-  Template.MasterModal.onRendered(function () {
-    var self = this;
-    $('#master-modal').on('show.bs.modal', function () {
-      self.modalClosed.set(false);
-    });
-    $('#master-modal').on('hidden.bs.modal', function () {
-      if (Package['aldeed:autoform']) {
-        var formId = self.modalDict.get("template") + "Form";
-        AutoForm.resetForm(formId);
-      }
-      self.modalClosed.set(true);
-    });
   });
 
   Template.MasterModal.helpers({
@@ -112,10 +99,20 @@ if (Meteor.isClient) {
   });
 
   Template.MasterModal.events({
-    "click button#MMconfirm" : function (event, templ) {
+    "click button#MMconfirm" : function (event, self) {
       event.preventDefault();
       var formId = event.currentTarget.dataset && event.currentTarget.dataset.submit;
       $("#" + formId).submit();
+    },
+    "show.bs.modal" : function (event, self) {
+      self.modalClosed.set(false);
+    },
+    "hidden.bs.modal" : function (event, self) {
+      if (Package['aldeed:autoform']) {
+        var formId = self.modalDict.get("template") + "Form";
+        AutoForm.resetForm(formId);
+      }
+      self.modalClosed.set(true);
     }
   });
 
@@ -124,7 +121,7 @@ if (Meteor.isClient) {
   Template.body.events({
 
     // Global non-conflicting listener for MasterModal trigger
-    "click [data-toggle='master-modal']" : function (event, templ) {
+    "click [data-toggle='master-modal']" : function (event, self) {
       event.preventDefault();
       event.stopPropagation();
       // Check the trigger event to make sure and eliminate
