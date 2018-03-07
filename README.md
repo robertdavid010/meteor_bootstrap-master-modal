@@ -7,12 +7,12 @@ Generate dynamic modal dialogues, lightboxes, or any other view based on Blaze t
 To install:
 `meteor add rd010:bootstrap-master-modal`
 
-In your top level BlazeJS component template, include the MasterModal helper:
+In your top level BlazeJS component template, include the MasterModal global template:
 
 *app.html*
 ```handlebars
 ...
-{{MasterModal}}
+{{> MasterModal}}
 ...
 ```
 
