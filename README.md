@@ -9,9 +9,11 @@ To install:
 
 In your top level BlazeJS component template, include the MasterModal helper:
 
-*app.js*
+*app.html*
 ```handlebars
+...
 {{MasterModal}}
+...
 ```
 
 This will add the bootstrap modal element to your HTML document.
@@ -77,7 +79,7 @@ Additionally data can be passed to the local context of the rendered template, a
 </button>
 ```
 
-This will make the `{{param}}` value available within the Blaze template, and contain the `somdId` value.
+This will make the `{{MMparam}}` helper available within the Blaze template, and contain the `somdId` value.
 
 ## More complex configuration of modal
 
@@ -200,7 +202,7 @@ Default simple boolean helper to allow for template views to easily conditionall
 ```handlebars
 {{MMformbtn}}
 ```
-For use with Autoform `{{> quickform}}` `buttonContent` parameter to either hide or display custom form submission button content. Can be set to "false" or custom text.
+For use with Autoform `{{> quickform}}` `buttonContent` parameter to either hide or display custom form submission button content. Can be set to custom text via the `btnlabel` attribute.
 
 ```handlebars
 {{MMparam}}
@@ -214,6 +216,8 @@ MasterModal adds support to submit forms in the modal template through the simpl
 The form will also be submitted by the default modal *confirm* button.
 
 Those supported forms will also close the modal with the `onSuccess` AutoForm event of the form submission.
+
+When the modal is closed, all errors for the AutoForm will also be reset, even if there was no successful submission. The ensures a fresh state for the form if another instance is launched when there were existing errors with no successful submission previously.
 
 *myTemplateName.html*
 ```html
@@ -293,7 +297,7 @@ Now you are able to create a generic lightbox template to display the image.
 ```handlebars
 <template name="lightbox">
   ...
-  <img src="{{param}}">
+  <img src="{{MMparam}}">
   ...
 </template>
 ```

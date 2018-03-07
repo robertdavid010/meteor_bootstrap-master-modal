@@ -78,6 +78,10 @@ if (Meteor.isClient) {
       self.modalClosed.set(false);
     });
     $('#master-modal').on('hidden.bs.modal', function () {
+      if (Package['aldeed:autoform']) {
+        var formId = self.modalDict.get("template") + "Form";
+        AutoForm.resetForm(formId);
+      }
       self.modalClosed.set(true);
     });
   });
