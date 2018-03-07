@@ -158,7 +158,7 @@ This will be used in place of the default text used by the package for the modal
 
 <a name="configformbtns"></a>
 **`formbtns`**
-This attribute is available with the modal template context to be used to pass to the `buttonContent` parameter for AutoForm quickform.
+This attribute is will set the `MMformbtn` helper with the modal template context to be used to pass to the `buttonContent` parameter for AutoForm quickform.
 
 <a name="configmodalbtns"></a>
 **`modalbtns`**
@@ -166,11 +166,11 @@ Setting this to `false` will hide the modal confirmation and dismiss buttons, al
 
 <a name="configmodalview"></a>
 **`modalview`**
-This helper is available within the modal template context as a boolean value to indicate the template is being rendered in the modal view. This will allow for the hiding of content within that supplied template based on the modal context to allow for re-use of the template in other contexts, with different controls or elements.
+This value will be available as the `MMview` helper is within the modal template context as a boolean value to indicate the template is being rendered in the modal view. This will allow for the hiding of content within that supplied template based on the modal context to allow for re-use of the template in other contexts, with different controls or elements.
 
 <a name="configparam"></a>
 **`param`**
-The value to be passed to the related helper available within the modal template when set on the launch of the template instance through the DOM trigger element.
+The value to be passed to the related `MMparam` helper available within the modal template when set on the launch of the template instance through the DOM trigger element.
 
 <a name="configroute"></a>
 **`route`**
@@ -188,22 +188,22 @@ Javascript config object and context attribute key. Fully describes the data con
 ## Template View Helpers
 Based on configurations above, several helpers are by default available within the modal view template data context.
 
-- modalview
-- formbtns
-- param
+- MMview
+- MMformbtn
+- MMparam
 
 ```handlebars
-{{modalview}}
+{{MMview}}
 ```
 Default simple boolean helper to allow for template views to easily conditionally disply UI elements based on the modal context. See examples with AutoForm.
 
 ```handlebars
-{{formbtns}}
+{{MMformbtn}}
 ```
 For use with Autoform `{{> quickform}}` `buttonContent` parameter to either hide or display custom form submission button content. Can be set to "false" or custom text.
 
 ```handlebars
-{{param}}
+{{MMparam}}
 ```
 The single value passed by the `data-param` attribute from the DOM.
 

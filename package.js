@@ -1,6 +1,6 @@
 Package.describe({
   name: 'rd010:bootstrap-master-modal',
-  version: '0.0.4',
+  version: '0.0.6',
   // Brief, one-line summary of the package.
   summary: 'Dynamic Modals. Use AutoForm, Bootstrap v 3/4, & existing templates for lightboxes, dialogues etc.',
   // URL to the Git repository containing the source code for this package.

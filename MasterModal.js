@@ -3,16 +3,13 @@
 /*
  *
  * ************************************************
- * Bootstrap Custom Modal for MeteorJS ************
+ * Bootstrap Custom Modal for MeteorJS & Blaze ****
  * ************************************************
  *
  * This is a package to create a basic routing
- * system for modals. This package can render
- * bascially any template inside a Bootstrap modal.
- * It parses and passes router helper generated,
- * or statically created, links with parameters and
- * queries to set the context for the modal template to
- * render and function properly.
+ * system for modals. It can render any template
+ * inside a Bootstrap modal.
+ *
  *
  */
 
@@ -72,7 +69,7 @@ MasterModal = new function () {
     CONFIG.formbtns = false;
     CONFIG.modalbtns = true;
     CONFIG.modalview = true;
-    CONFIG.btnlabel = "Submit";
+    CONFIG.btnlabel = "Confirm";
     CONFIG.keys = [
       "title",
       "size",
@@ -163,7 +160,6 @@ MasterModal = new function () {
         validObj.modalbtns = rawObj.modalbtns === "false" ? false : true;
         validObj.context.formbtns = !validObj.modalbtns;
       }
-      console.log(validObj.modalbtns);
       // Wierd for AF quickform interaction (true must be "Submit" for default...);
       if (validObj.context.formbtns === true) {
         validObj.context.formbtns = rawObj.btnlabel || "Submit";
@@ -173,6 +169,11 @@ MasterModal = new function () {
       validObj.size = ["sm","md","lg"].indexOf(rawObj.size) !== -1 ? rawObj.size : CONFIG.size;
       validObj.title = rawObj.title || CONFIG.title;
       validObj.btnlabel = rawObj.btnlabel || CONFIG.btnlabel;
+
+    // Convert conventions for namespaced helpers
+    validObj.context.MMformbtn = validObj.context.formbtns; delete validObj.context.formbtns;
+    validObj.context.MMview = validObj.context.modalview; delete validObj.context.modalview;
+    validObj.context.MMparam = validObj.context.param; delete validObj.context.param;
 
     return validObj;
   } // end validateKeys() {}

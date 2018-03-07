@@ -108,7 +108,7 @@ if (Meteor.isClient) {
   });
 
   Template.MasterModal.events({
-    "click #modalFormSubmit" : function (event, templ) {
+    "click button#MMconfirm" : function (event, templ) {
       event.preventDefault();
       var formId = event.currentTarget.dataset && event.currentTarget.dataset.submit;
       $("#" + formId).submit();
