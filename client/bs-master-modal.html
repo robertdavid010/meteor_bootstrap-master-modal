@@ -11,10 +11,10 @@
           {{#if bsV4}}
             {{!-- Bootstrap4 Modal header --}}
             <h5 class="modal-title">{{title}}</h5>
-            <button type="button" class="close" data-dismiss="modal"><span class="fa fa-times">&times;</span></button>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
           {{else}}
             {{!-- Bootstrap3 Modal header --}}
-            <button type="button" class="close" data-dismiss="modal"><span class="fa fa-times">&times;</span></button>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
             <h5 class="modal-title">{{title}}</h5>
           {{/if}}
         </div>
@@ -25,7 +25,7 @@
 
         {{#if modalbtns}}
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-{{#if bsV4}}light{{else}}default{{/if}}" data-dismiss="modal">Cancel</button>
             <button id="MMconfirm" type="button" class="btn btn-success" data-submit="{{template}}Form">{{btnlabel}}</button>
           </div>
         {{/if}}
