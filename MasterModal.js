@@ -107,68 +107,72 @@ MasterModal = new function () {
     // Simple check to transform obj if needed
     var modalData = {context:{}};
     if (!obj.context) {
-      modalData = __validateKeys(obj);
-
+      return __validateKeys(obj);
     } else {
       // "context" data attribute override
-      var parsed = JSON.parse(obj.context);
-      var modalObj = {};
+      if (typeof obj.context === "string") {
+        var modalObj = {};
+        var parsed = JSON.parse(obj.context);
 
-      for (var e in parsed) {
-        if (e === "data") {
-          // Slight change in semantics here
-          modalObj.context = parsed[e];
-        } else {
-          modalObj[e] = parsed[e];
+        for (var e in parsed) {
+          if (e === "data") {
+            // Slight change in semantics here
+            modalObj.context = parsed[e];
+          } else {
+            modalObj[e] = parsed[e];
+          }
         }
+        return __validateKeys(modalObj);
       }
-      modalData = __validateKeys(modalObj);
+      return __validateKeys(obj);
     }
 
-    return modalData;
+    return "Error: No parameters supplied";
 
   }
 
   function __validateKeys(rawObj) {
     // Validate config object
     var validObj = {};
+    console.log("validating keys...");
+    console.log(rawObj);
 
     validObj.context = rawObj.context || {};
-      if (rawObj.template) {
-        validObj.template = rawObj.template;
-      } else if (rawObj.route) {
-        // A way of passing template and params together
-        // we parse it as a 'url' type path
-        // Template name is taken from first URL segment
-        // Params parsed and passed through to modal data context
-        var route = parseUri(rawObj.route);
-        validObj.template = route.path.split('/')[1];
-        validObj.context = route.queryKey;
-      } else {
-        validObj.template = "defaultModalTemplate";
-      }
+    if (rawObj.template) {
+      validObj.template = rawObj.template;
+    } else if (rawObj.route) {
+      // A way of passing template and params together
+      // we parse it as a 'url' type path
+      // Template name is taken from first URL segment
+      // Params parsed and passed through to modal data context
+      var route = parseUri(rawObj.route);
+      validObj.template = route.path.split('/')[1];
+      validObj.context = route.queryKey;
+    } else {
+      validObj.template = "defaultModalTemplate";
+    }
 
-      if (rawObj.param && Object.keys(validObj.context).length === 0) {
-        validObj.context.param = rawObj.param;
-      }
+    if (rawObj.param && Object.keys(validObj.context).length === 0) {
+      validObj.context.param = rawObj.param;
+    }
 
-      if (rawObj.formbtns) {
-        // NOTE: We want to see if simple logic inversion works
-        validObj.context.formbtns = rawObj.formbtns === "true" ? true : false;
-        validObj.modalbtns = !validObj.context.formbtns;
-      } else {
-        validObj.modalbtns = rawObj.modalbtns === "false" ? false : true;
-        validObj.context.formbtns = !validObj.modalbtns;
-      }
-      // Wierd for AF quickform interaction (true must be "Submit" for default...);
-      if (validObj.context.formbtns === true) {
-        validObj.context.formbtns = rawObj.btnlabel || "Submit";
-      }
-      // Set/check defaults Defaults
-      validObj.context.modalview = rawObj.modalview === "false" ? false : CONFIG.modalview; // TODO: Complete logic to handle future config changes
-      validObj.size = ["sm","md","lg"].indexOf(rawObj.size) !== -1 ? rawObj.size : CONFIG.size;
-      validObj.title = rawObj.title || CONFIG.title;
-      validObj.btnlabel = rawObj.btnlabel || CONFIG.btnlabel;
+    if (rawObj.formbtns) {
+      // NOTE: We want to see if simple logic inversion works
+      validObj.context.formbtns = rawObj.formbtns === "true" ? true : false;
+      validObj.modalbtns = !validObj.context.formbtns;
+    } else {
+      validObj.modalbtns = rawObj.modalbtns === "false" || rawObj.modalbtns === false ? false : true;
+      validObj.context.formbtns = !validObj.modalbtns;
+    }
+    // Wierd for AF quickform interaction (true must be "Submit" for default...);
+    if (validObj.context.formbtns === true) {
+      validObj.context.formbtns = rawObj.btnlabel || "Submit";
+    }
+    // Set/check defaults Defaults
+    validObj.context.modalview = rawObj.modalview === "false" ? false : CONFIG.modalview; // TODO: Complete logic to handle future config changes
+    validObj.size = ["sm", "md", "lg"].indexOf(rawObj.size) !== -1 ? rawObj.size : CONFIG.size;
+    validObj.title = rawObj.title || CONFIG.title;
+    validObj.btnlabel = rawObj.btnlabel || CONFIG.btnlabel;
 
     // Convert conventions for namespaced helpers
     // TODO: Replace with loop/function
